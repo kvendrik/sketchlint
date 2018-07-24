@@ -4,7 +4,7 @@
   "description": "",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "bin": "bin/sketchlint",
+  "bin": "cli/sketchlint",
   "scripts": {
     "lint": "yarn lint:ts && yarn lint:tslint && yarn lint:eslint",
     "lint:ts": "tsc --noEmit --pretty",
