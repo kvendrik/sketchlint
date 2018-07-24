@@ -1,5 +1,6 @@
 import * as path from 'path';
-import {exec} from 'shelljs';
+import * as fs from 'fs';
+import {exec, ExecOutputReturnValue} from 'shelljs';
 
 describe('sketchlint-cli', () => {
   const binPath = path.resolve(module.parent.filename, '../..', 'sketchlint');
@@ -7,7 +8,9 @@ describe('sketchlint-cli', () => {
 
   function execSketchlint(sketchFilePath?: string, configFilePath?: string) {
     const configArg = configFilePath ? `--config ${configFilePath}` : '';
-    return exec(`${binPath} ${sketchFilePath} ${configArg}`);
+    return exec(`${binPath} ${sketchFilePath} ${configArg}`, {
+      silent: true,
+    }) as ExecOutputReturnValue;
   }
 
   function getFixtureSketchPath(fixture: string) {
@@ -20,6 +23,13 @@ describe('sketchlint-cli', () => {
 
   function getArgumentsForFixture(fixture: string) {
     return [getFixtureSketchPath(fixture), getFixtureConfigPath(fixture)];
+  }
+
+  function getExpectedOutputForFixture(fixture: string) {
+    return fs.readFileSync(
+      `${basePath}/fixtures/${fixture}/output.txt`,
+      'utf-8',
+    );
   }
 
   describe('<sketchFilePath>', () => {
@@ -66,55 +76,10 @@ describe('sketchlint-cli', () => {
   });
 
   describe('result', () => {
-    it('shows the layer path for every linting error', () => {
+    it('matches the snapshot for a basic input', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
-      const resultOut = result.toString();
-      expect(resultOut).toContain('page-about');
-      expect(resultOut).toContain('homepage/v1/box/title');
-    });
-
-    it('shows the error types', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      const resultOut = result.toString();
-      expect(resultOut).toContain('error');
-      expect(resultOut).toContain('warning');
-    });
-
-    it('shows the rule IDs', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      const resultOut = result.toString();
-      expect(resultOut).toContain('noPagePrefix');
-      expect(resultOut).toContain('noExclamationMark');
-    });
-
-    it('shows the error messages', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      const resultOut = result.toString();
-      expect(resultOut).toContain(
-        'text "Yeey!" may not contain an exclamation mark.',
-      );
-      expect(resultOut).toContain(
-        'Page name "page-about" contains forbidden "page" prefix.',
-      );
-    });
-
-    it('shows a summary', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      expect(result.toString()).toContain('✖ 2 problems (1 error, 1 warning)');
-    });
-
-    it('has the right format', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      expect(result.toString()).toBe(
-        `page-about
-error Page name "page-about" contains forbidden "page" prefix. noPagePrefix
-
-homepage/v1/box/title
-warning text "Yeey!" may not contain an exclamation mark. noExclamationMark
-
-✖ 2 problems (1 error, 1 warning)
-`,
-      );
+      const expectedOutput = getExpectedOutputForFixture('basic');
+      expect(result.toString()).toBe(expectedOutput);
     });
   });
 });
