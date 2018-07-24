@@ -60,7 +60,7 @@ yarn add sketchlint
 
 ```ts
 import fs from 'fs';
-import sketchlint, {Page, Layer} from '../';
+import sketchlint, {Page, Layer} from 'sketchlint';
 
 const sketchData = fs.readFileSync(`${__dirname}/fixtures/basic.sketch`);
 const lintingErrors = await sketchlint(sketchData, {
