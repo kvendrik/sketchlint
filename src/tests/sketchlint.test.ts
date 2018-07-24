@@ -122,5 +122,19 @@ describe('sketchlint', () => {
         ]),
       );
     });
+
+    it('artboard are not considered layers', async () => {
+      const validatorSpy = jest.fn();
+      await sketchlint(basicSketchData, {
+        layers: {
+          testValidator: validatorSpy,
+        },
+      });
+      expect(validatorSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'v1',
+        }),
+      );
+    });
   });
 });

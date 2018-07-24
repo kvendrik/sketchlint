@@ -1,26 +1,7 @@
 import * as sketch2json from 'sketch2json';
 import validateGroup from './utilities/validateGroup';
-import {Layer, ValidatorGroups, LintingError, Page} from './types';
-
-function validateLayers(
-  layers: Layer[],
-  validators: ValidatorGroups['layers'],
-  pathPrefix: string,
-): LintingError[] {
-  return validateGroup<Layer, ValidatorGroups['layers']>(layers, validators, {
-    getPath: ({name}: Layer) => `${pathPrefix}/${name}`,
-    eachItem(layer: Layer) {
-      if (layer.layers) {
-        return validateLayers(
-          layer.layers,
-          validators,
-          `${pathPrefix}/${layer.name}`,
-        );
-      }
-      return [];
-    },
-  });
-}
+import validateLayers from './utilities/validateLayers';
+import {ValidatorGroups, LintingError, Page} from './types';
 
 async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
   const sketchJSON = await sketch2json(sketchData);
@@ -41,7 +22,17 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
   if (validatorGroups.layers) {
     for (const page of pages) {
       const {layers, name} = page;
-      const layersErrors = validateLayers(layers, validatorGroups.layers, name);
+      const layersErrors = validateLayers(
+        'page',
+        layers,
+        {
+          '*': validatorGroups.layers,
+          artboard: validatorGroups.artboards || {},
+        },
+        {
+          pathPrefix: name,
+        },
+      );
       lintingErrors = [...lintingErrors, ...layersErrors];
     }
   }

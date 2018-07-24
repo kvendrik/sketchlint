@@ -14,7 +14,8 @@
     "no-use-before-define": "off",
     "no-restricted-syntax": "off",
     "consistent-return": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "no-underscore-dangle": "off"
   },
   "env": {
     "node": true,
