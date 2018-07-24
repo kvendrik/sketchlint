@@ -4,6 +4,8 @@ Pluggable linting utility for Sketch.
 
 Using Sketchlint you can enforce brand consistency across designs by defining a set of rules any Sketch file can be checked against.
 
+![](demo.gif)
+
 ## Usage
 
 ```
