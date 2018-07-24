@@ -9,7 +9,10 @@ const chalk = require('chalk');
 const sketchlint = require('../build');
 
 const strippedArgv = process.argv.slice(2);
-const {_: [sketchFilePath], config: configPath} = minimist(strippedArgv);
+const {
+  _: [sketchFilePath],
+  config: configPath,
+} = minimist(strippedArgv);
 
 function printUsage() {
   console.log('Usage: sketchlint <sketchFilePath> --config <configFilePath>');
@@ -33,24 +36,23 @@ if (!fs.existsSync(sketchFilePath)) {
 const config = require(path.resolve(process.cwd(), configPath));
 const sketchData = fs.readFileSync(sketchFilePath);
 
-sketchlint.default(sketchData, config)
-  .then((lintingErrors) => {
-    for (const {ruleID, message, type, path} of lintingErrors) {
-      const coloredPath = chalk.underline(path);
-      const coloredType = type === 'error' ? chalk.red(type) : chalk.yellow(type);
-      const coloredRule = chalk.grey(ruleID);
-      console.log(`${coloredPath}\n${coloredType} ${message} ${coloredRule}\n`);
-    }
-    const {message, errorCount} = constructResultMessage(lintingErrors);
-    console.log(message);
-    process.exit(errorCount > 0 ? 1 : 0);
-  });
-
+sketchlint.default(sketchData, config).then(lintingErrors => {
+  for (const {ruleID, message, type, path} of lintingErrors) {
+    const coloredPath = chalk.underline(path);
+    const coloredType = type === 'error' ? chalk.red(type) : chalk.yellow(type);
+    const coloredRule = chalk.grey(ruleID);
+    console.log(`${coloredPath}\n${coloredType} ${message} ${coloredRule}\n`);
+  }
+  const {message, errorCount} = constructResultMessage(lintingErrors);
+  console.log(message);
+  process.exit(errorCount > 0 ? 1 : 0);
+});
 
 function constructResultMessage(lintingErrors) {
   function getCount(forType) {
-    return lintingErrors.reduce((currentCount, {type}) =>
-      type === forType ? currentCount + 1 : currentCount,
+    return lintingErrors.reduce(
+      (currentCount, {type}) =>
+        type === forType ? currentCount + 1 : currentCount,
       0,
     );
   }
@@ -65,15 +67,26 @@ function constructResultMessage(lintingErrors) {
   const errorCount = getCount('error');
   const warningCount = getCount('warning');
 
-  const errorsString = errorCount > 0 ? `${errorCount} ${formatPlural('error', errorCount)}` : '';
-  const warningsString = warningCount > 0 ? `${warningCount} ${formatPlural('warning', warningCount)}` : '';
+  const errorsString =
+    errorCount > 0 ? `${errorCount} ${formatPlural('error', errorCount)}` : '';
+  const warningsString =
+    warningCount > 0
+      ? `${warningCount} ${formatPlural('warning', warningCount)}`
+      : '';
 
   const problemCount = errorCount + warningCount;
-  const problemDetails = errorsString || warningsString ? `(${[errorsString, warningsString].join(', ')})` : '';
-  const problemText = `✖ ${problemCount} ${formatPlural('problem', problemCount)} ${problemDetails}`;
+  const problemDetails =
+    errorsString || warningsString
+      ? `(${[errorsString, warningsString].join(', ')})`
+      : '';
+  const problemText = `✖ ${problemCount} ${formatPlural(
+    'problem',
+    problemCount,
+  )} ${problemDetails}`;
 
   return {
-    message: errorCount > 0 ? chalk.red(problemText) : chalk.yellow(problemText),
+    message:
+      errorCount > 0 ? chalk.red(problemText) : chalk.yellow(problemText),
     errorCount,
   };
 }
