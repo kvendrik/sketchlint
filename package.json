@@ -39,8 +39,10 @@
   },
   "dependencies": {
     "@types/minimist": "^1.2.0",
+    "@types/shelljs": "^0.8.0",
     "chalk": "^2.4.1",
     "minimist": "^1.2.0",
+    "shelljs": "^0.8.2",
     "sketch2json": "^0.1.2"
   }
 }
