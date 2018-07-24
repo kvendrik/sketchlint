@@ -1,28 +1,31 @@
 import {sketchData as basicSketchData} from './fixtures/basic';
+import {
+  sketchData as exclamationMarkSketchData,
+  noExclamationMark as noExclamationMarkRule,
+} from './fixtures/nested-exclamation-mark';
 import sketchlint, {ValidatorError} from '../';
 
-describe('sketchlint', () => {
-  describe('pages', () => {
-    const mockError: ValidatorError = [
-      'error',
-      `Page name contains forbidden "page" prefix.`,
-    ];
+const mockError: ValidatorError = [
+  'error',
+  `Object name contains forbidden prefix.`,
+];
 
-    it('runs validators for pages', async () => {
+function getDefaultTestsForValidatorGroup(category: string) {
+  return () => {
+    it('runs validators', async () => {
       const validatorSpy = jest.fn();
       await sketchlint(basicSketchData, {
-        pages: {
+        [category]: {
           testValidator: validatorSpy,
-          secondTestValidator: validatorSpy,
         },
       });
       expect(validatorSpy).toHaveBeenCalled();
     });
 
-    it('passes the page object into the validator', async () => {
+    it(`passes the group item into the validator`, async () => {
       const validatorSpy = jest.fn();
       await sketchlint(basicSketchData, {
-        pages: {
+        [category]: {
           testValidator: validatorSpy,
         },
       });
@@ -35,7 +38,7 @@ describe('sketchlint', () => {
 
     it('includes the ruleID', async () => {
       const results = await sketchlint(basicSketchData, {
-        pages: {
+        [category]: {
           testValidator: () => mockError,
         },
       });
@@ -51,7 +54,7 @@ describe('sketchlint', () => {
 
     it('includes the error message', async () => {
       const results = await sketchlint(basicSketchData, {
-        pages: {
+        [category]: {
           testValidator: () => mockError,
         },
       });
@@ -67,7 +70,7 @@ describe('sketchlint', () => {
 
     it('includes the error type', async () => {
       const results = await sketchlint(basicSketchData, {
-        pages: {
+        [category]: {
           testValidator: () => mockError,
         },
       });
@@ -83,7 +86,7 @@ describe('sketchlint', () => {
 
     it('includes the error path', async () => {
       const results = await sketchlint(basicSketchData, {
-        pages: {
+        [category]: {
           testValidator: () => mockError,
         },
       });
@@ -92,6 +95,29 @@ describe('sketchlint', () => {
         expect.arrayContaining([
           expect.objectContaining({
             path: expect.any(String),
+          }),
+        ]),
+      );
+    });
+  };
+}
+
+describe('sketchlint', () => {
+  describe('pages', getDefaultTestsForValidatorGroup('pages'));
+  describe('layers', () => {
+    getDefaultTestsForValidatorGroup('layers')();
+
+    it('includes the nested error path when the layer is nested', async () => {
+      const results = await sketchlint(exclamationMarkSketchData, {
+        layers: {
+          noExclamationMarkRule,
+        },
+      });
+
+      expect(results).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            path: 'homepage/v1/box/title',
           }),
         ]),
       );
