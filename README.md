@@ -1,4 +1,4 @@
-# Sketchlint 💎
+# [WIP] Sketchlint 💎
 
 Pluggable linting utility for Sketch.
 
