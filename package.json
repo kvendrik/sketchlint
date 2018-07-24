@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@types/minimist": "^1.2.0",
+    "chalk": "^2.4.1",
     "minimist": "^1.2.0",
     "sketch2json": "^0.1.2"
   }

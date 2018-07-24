@@ -17,5 +17,5 @@
     "typeRoots": ["./app/config", "./node_modules/@types"],
     "declaration": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "*/**/tests/**/*"]
 }
