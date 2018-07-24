@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noImplicitReturns": false,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es5",
+    "lib": ["es2017"],
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "outDir": "build",
+    "typeRoots": ["./app/config", "./node_modules/@types"],
+    "declaration": true
+  },
+  "exclude": ["node_modules"]
+}

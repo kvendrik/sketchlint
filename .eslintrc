@@ -1,0 +1,22 @@
+{
+  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "parser": "typescript-eslint-parser",
+  "plugins": ["typescript"],
+  "rules": {
+    "no-undef": "off",
+    "max-len": "off",
+    "no-multi-str": "off",
+    "object-curly-spacing": ["error", "never"],
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "typescript/no-unused-vars": "error",
+    "no-restricted-globals": "off",
+    "no-use-before-define": "off",
+    "no-restricted-syntax": "off",
+    "consistent-return": "off"
+  },
+  "env": {
+    "node": true,
+    "jest": true
+  }
+}

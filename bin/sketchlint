@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+process.chdir(process.cwd());
+
+const minimist = require('minimist');
+const fs = require('fs');
+const sketchlint = require('../build');
+
+const strippedArgv = process.argv.slice(2);
+const {_: [sketchFilePath], config: configPath} = minimist(strippedArgv);
+
+function printUsage() {
+  console.log('Usage: sketchlint <sketchFilePath> --config <configFilePath>');
+}
+
+if (!configPath) {
+  printUsage();
+  process.exit(1);
+}
+
+if (!fs.existsSync(configPath)) {
+  console.log(`Config file path ${configPath} does not exist.`);
+  process.exit(1);
+}
+
+if (!fs.existsSync(sketchFilePath)) {
+  console.log(`Sketch file path ${sketchFilePath} does not exist.`);
+  process.exit(1);
+}
+
+const config = fs.readFileSync(configPath, 'utf-8');
+const sketchData = fs.readFileSync(configPath, 'utf-8');
+
+sketchlint(sketchData, config)
+  .then((results) => {
+    console.log(results);
+  });
