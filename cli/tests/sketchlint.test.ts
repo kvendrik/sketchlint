@@ -33,45 +33,36 @@ describe('sketchlint-cli', () => {
   }
 
   describe('<sketchFilePath>', () => {
-    it('throws if no sketch file path is given', () => {
+    it('shows usage message if path is not given', () => {
       const result = execSketchlint('');
       expect(result.code).toBe(1);
-    });
-
-    it('throws if sketch file path doesnt exist', () => {
-      const result = execSketchlint(
-        getFixtureSketchPath('something-that-doesnt-exist'),
-      );
-      expect(result.code).toBe(1);
-    });
-
-    it('shows usage message when it throws', () => {
-      const result = execSketchlint(
-        getFixtureSketchPath('something-that-doesnt-exist'),
-      );
       expect(result.toString()).toContain('Usage');
+    });
+
+    it('shows error message if sketch file doesnt exist', () => {
+      const sketchPath = getFixtureSketchPath('something-that-doesnt-exist');
+      const result = execSketchlint(sketchPath, getFixtureConfigPath('basic'));
+      expect(result.code).toBe(1);
+      expect(result.toString()).toContain(
+        `Sketch file path ${sketchPath} does not exist.`,
+      );
     });
   });
 
   describe('<configFilePath>', () => {
-    it('throws if no config file path is given', () => {
+    it('shows usage message if path is not given', () => {
       const result = execSketchlint(getFixtureSketchPath('basic'));
       expect(result.code).toBe(1);
-    });
-
-    it('throws if config file path doesnt exist', () => {
-      const result = execSketchlint(
-        getFixtureSketchPath('basic'),
-        getFixtureConfigPath('something-that-doesnt-exist'),
-      );
-      expect(result.code).toBe(1);
-    });
-
-    it('shows usage message when it throws', () => {
-      const result = execSketchlint(
-        getFixtureSketchPath('something-that-doesnt-exist'),
-      );
       expect(result.toString()).toContain('Usage');
+    });
+
+    it('shows error message if config file doesnt exist', () => {
+      const configPath = getFixtureConfigPath('something-that-doesnt-exist');
+      const result = execSketchlint(getFixtureSketchPath('basic'), configPath);
+      expect(result.code).toBe(1);
+      expect(result.toString()).toContain(
+        `Config file path ${configPath} does not exist.`,
+      );
     });
   });
 

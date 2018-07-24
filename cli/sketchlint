@@ -18,7 +18,7 @@ function printUsage() {
   console.log('Usage: sketchlint <sketchFilePath> --config <configFilePath>');
 }
 
-if (!configPath) {
+if (!sketchFilePath || !configPath) {
   printUsage();
   process.exit(1);
 }
