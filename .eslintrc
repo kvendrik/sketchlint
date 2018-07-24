@@ -13,7 +13,8 @@
     "no-restricted-globals": "off",
     "no-use-before-define": "off",
     "no-restricted-syntax": "off",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "import/prefer-default-export": "off"
   },
   "env": {
     "node": true,

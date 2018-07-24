@@ -11,16 +11,15 @@ export interface Page {
 }
 
 export type ErrorType = 'error' | 'warning';
-
-type ValidatorError = [ErrorType, string];
+export type ValidatorError = [ErrorType, string];
 
 interface Validators<T> {
   [ruleName: string]: (data: T) => ValidatorError | void;
 }
 
 export interface ValidatorGroups {
-  pages: Validators<Page>;
-  layers: Validators<Layer>;
+  pages?: Validators<Page>;
+  layers?: Validators<Layer>;
 }
 
 export interface LintingError {
