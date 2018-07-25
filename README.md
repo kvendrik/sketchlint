@@ -8,7 +8,7 @@
 
 Sketchlint allows you to enforce brand consistency across designs by defining a set of rules any Sketch file can be checked against.
 
-![Demo](demo.gif)
+<img src="https://github.com/kvendrik/sketchlint/raw/master/demo.gif" width="100%" />
 
 ## Usage (CLI)
 
