@@ -1,6 +1,10 @@
-# [WIP] Sketchlint 💎
+# [WIP] Sketchlint
 
-Pluggable linting utility for Sketch.
+[![CircleCI](https://circleci.com/gh/kvendrik/sketchlint.svg?style=svg)](https://circleci.com/gh/kvendrik/sketchlint)
+[![Coverage Status](https://coveralls.io/repos/github/kvendrik/sketchlint/badge.svg?branch=master)](https://coveralls.io/github/kvendrik/sketchlint?branch=master)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+💎 Pluggable linting utility for Sketch.
 
 Sketchlint allows you to enforce brand consistency across designs by defining a set of rules any Sketch file can be checked against.
 
