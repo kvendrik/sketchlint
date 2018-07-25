@@ -67,10 +67,74 @@ describe('sketchlint-cli', () => {
   });
 
   describe('result', () => {
-    it('matches the snapshot for a basic input', () => {
+    it('shows the layer path for every linting error', () => {
+      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      const resultOut = result.toString();
+      expect(resultOut).toContain('page-about');
+      expect(resultOut).toContain('homepage/v1/box/title');
+    });
+
+    it('shows the error types', () => {
+      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      const resultOut = result.toString();
+      expect(resultOut).toContain('error');
+      expect(resultOut).toContain('warning');
+    });
+
+    it('shows the rule IDs', () => {
+      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      const resultOut = result.toString();
+      expect(resultOut).toContain('noPagePrefix');
+      expect(resultOut).toContain('noExclamationMark');
+    });
+
+    it('shows the error messages', () => {
+      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      const resultOut = result.toString();
+      expect(resultOut).toContain(
+        'text "Yeey!" may not contain an exclamation mark.',
+      );
+      expect(resultOut).toContain(
+        'Page name "page-about" contains forbidden "page" prefix.',
+      );
+    });
+
+    it('shows a summary', () => {
+      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      expect(result.toString()).toContain('✖ 2 problems (1 error, 1 warning)');
+    });
+
+    it('uses sigular language when there is only a single problem', () => {
+      const result = execSketchlint(...getArgumentsForFixture('error'));
+      expect(result.toString()).toContain('✖ 1 problem');
+    });
+
+    it('uses plurals when there are multiple problems', () => {
+      const result = execSketchlint(...getArgumentsForFixture('rich'));
+      expect(result.toString()).toContain(
+        '✖ 4 problems (2 errors, 2 warnings)',
+      );
+    });
+
+    it('applies the right formatting', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
       const expectedOutput = getExpectedOutputForFixture('basic');
       expect(result.toString()).toBe(expectedOutput);
+    });
+
+    it('only shows warnings count when no errors are detected', () => {
+      const result = execSketchlint(...getArgumentsForFixture('warning'));
+      expect(result.toString()).toContain('(1 warning)');
+    });
+
+    it('only shows errors count when no warnings are detected', () => {
+      const result = execSketchlint(...getArgumentsForFixture('error'));
+      expect(result.toString()).toContain('(1 error)');
+    });
+
+    it('prints success message when the file is clean', () => {
+      const result = execSketchlint(...getArgumentsForFixture('clean'));
+      expect(result.toString()).toContain('All good.');
     });
   });
 });
