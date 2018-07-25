@@ -1,4 +1,4 @@
-# [WIP] Sketchlint
+# Sketchlint
 
 [![CircleCI](https://circleci.com/gh/kvendrik/sketchlint.svg?style=svg)](https://circleci.com/gh/kvendrik/sketchlint)
 [![Coverage Status](https://coveralls.io/repos/github/kvendrik/sketchlint/badge.svg?branch=master)](https://coveralls.io/github/kvendrik/sketchlint?branch=master)
@@ -10,14 +10,15 @@ Sketchlint allows you to enforce brand consistency across designs by defining a 
 
 <img src="https://github.com/kvendrik/sketchlint/raw/master/demo.gif" width="100%" />
 
-## Usage (CLI)
+## Getting Started (CLI)
 
+Install Sketchlint using [`yarn`](https://yarnpkg.com/en/package/sketchlint):
 ```
 yarn global add sketchlint
 ```
 
+Then, create a file named `sketchlint.config.js`. This will contain our rules:
 ```js
-// sketchlint.config.js
 module.exports = {
   pages: {
     noPagePrefix({name}) {
@@ -44,6 +45,7 @@ module.exports = {
 };
 ```
 
+Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-format-in-sketch-43)) Sketch file and it will make sure it complies with your rules. Here we run Sketchlint against a Sketch file called `my-design.sketch`:
 ```bash
 sketchlint my-design.sketch --config sketchlint.config.js
 
@@ -56,12 +58,14 @@ homepage/v1/box/title
 ✖ 2 problems (1 error, 1 warning)
 ```
 
-## Usage (Node)
+## Getting Started (Node)
 
+Install Sketchlint using [`yarn`](https://yarnpkg.com/en/package/sketchlint):
 ```
 yarn add sketchlint
 ```
 
+Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-format-in-sketch-43)) Sketch file and it will check if the file complies with the given set of rules and give back an array of linting errors (if there are any).
 ```ts
 import fs from 'fs';
 import sketchlint, {Page, Layer} from 'sketchlint';
