@@ -13,7 +13,7 @@ Sketchlint allows you to enforce brand consistency across designs by defining a 
 ## Usage (CLI)
 
 ```
-yarn add --global sketchlint
+yarn global add sketchlint
 ```
 
 ```js
