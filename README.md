@@ -13,11 +13,13 @@ Sketchlint allows you to enforce brand consistency across designs by defining a 
 ## Getting Started (CLI)
 
 Install Sketchlint using [`yarn`](https://yarnpkg.com/en/package/sketchlint):
+
 ```
 yarn global add sketchlint
 ```
 
 Then, create a file named `sketchlint.config.js`. This will contain our rules:
+
 ```js
 module.exports = {
   pages: {
@@ -46,6 +48,7 @@ module.exports = {
 ```
 
 Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-format-in-sketch-43)) Sketch file and it will make sure it complies with your rules. Here we run Sketchlint against a Sketch file called `my-design.sketch`:
+
 ```bash
 sketchlint my-design.sketch --config sketchlint.config.js
 
@@ -61,11 +64,13 @@ homepage/v1/box/title
 ## Getting Started (Node)
 
 Install Sketchlint using [`yarn`](https://yarnpkg.com/en/package/sketchlint):
+
 ```
 yarn add sketchlint
 ```
 
 Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-format-in-sketch-43)) Sketch file and it will check if the file complies with the given set of rules and give back an array of linting errors (if there are any).
+
 ```ts
 import fs from 'fs';
 import sketchlint, {Page, Layer} from 'sketchlint';
@@ -98,3 +103,10 @@ const lintingErrors = await sketchlint(sketchData, {
 
 console.log(lintingErrors);
 ```
+
+## 🏗 Contributing
+
+1.  Make your changes.
+2.  Add/Alter the appropriate tests.
+3.  Make sure all tests pass (`yarn lint && yarn test`).
+4.  Create a PR.
