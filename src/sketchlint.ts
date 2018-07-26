@@ -2,6 +2,13 @@ import * as sketch2json from 'sketch2json';
 import validateGroup from './utilities/validateGroup';
 import {Layer, ValidatorGroups, LintingError, Page} from './types';
 
+interface SketchJSON {
+  pages: {
+    [id: string]: Page;
+  };
+  [category: string]: any;
+}
+
 function validateLayers(
   layers: Layer[],
   validators: ValidatorGroups['layers'],
@@ -22,8 +29,10 @@ function validateLayers(
   });
 }
 
-async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
-  const sketchJSON = await sketch2json(sketchData);
+export function lintFromJSON(
+  sketchJSON: SketchJSON,
+  validatorGroups: ValidatorGroups,
+) {
   const pages: Page[] = Object.values(sketchJSON.pages);
   let lintingErrors: LintingError[] = [];
 
@@ -49,4 +58,10 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
   return lintingErrors;
 }
 
-export default sketchlint;
+export default async function sketchlint(
+  sketchData: any,
+  validatorGroups: ValidatorGroups,
+) {
+  const sketchJSON = await sketch2json(sketchData);
+  return lintFromJSON(sketchJSON, validatorGroups);
+}
