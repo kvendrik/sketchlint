@@ -9,32 +9,32 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
   let lintingErrors: LintingError[] = [];
 
   if (validatorGroups.pages) {
-    const pagesErrors = validateGroup<Page, ValidatorGroups['pages']>(
-      pages,
-      validatorGroups.pages,
-      {
-        getPath: ({name}: Page) => name,
-      },
-    );
+    const pagesErrors = validateGroup<Page, ValidatorGroups['pages']>(pages, {
+      getValidators: () => validatorGroups.pages,
+      getPath: ({name}: Page) => name,
+    });
     lintingErrors = [...lintingErrors, ...pagesErrors];
+
+    const onlyHasPagesValidator = Object.keys(validatorGroups).length === 1;
+    if (onlyHasPagesValidator) {
+      return lintingErrors;
+    }
   }
 
-  if (validatorGroups.layers) {
-    for (const page of pages) {
-      const {layers, name} = page;
-      const layersErrors = validateLayers(
-        'page',
-        layers,
-        {
-          '*': validatorGroups.layers,
-          artboard: validatorGroups.artboards || {},
-        },
-        {
-          pathPrefix: name,
-        },
-      );
-      lintingErrors = [...lintingErrors, ...layersErrors];
-    }
+  for (const page of pages) {
+    const {layers, name} = page;
+    const layersErrors = validateLayers(
+      layers,
+      {
+        default: validatorGroups.layers || {},
+        artboard: validatorGroups.artboards || {},
+        group: validatorGroups.groups || {},
+      },
+      {
+        pathPrefix: name,
+      },
+    );
+    lintingErrors = [...lintingErrors, ...layersErrors];
   }
 
   return lintingErrors;

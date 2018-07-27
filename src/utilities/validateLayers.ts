@@ -1,25 +1,30 @@
 import validateGroup from './validateGroup';
-import {Layer, ValidatorGroups, LintingError, Validators} from '../types';
+import {Layer, LintingError, Validators} from '../types';
 
 interface Options {
   pathPrefix: string;
 }
 
+type ClassValidators = Validators<any>;
+
+interface ClassValidatorsGroups {
+  [className: string]: ClassValidators;
+}
+
 function validateLayers(
-  className: string,
   layers: Layer[],
-  classValidators: any,
+  classValidators: ClassValidatorsGroups,
   {pathPrefix}: Options,
 ): LintingError[] {
-  return validateGroup<Layer, ValidatorGroups['layers']>(layers, {
+  return validateGroup<Layer, ClassValidators>(layers, {
     getPath: ({name}: Layer) => `${pathPrefix}/${name}`,
     getValidators: ({_class}: Layer) =>
-      classValidators[_class] || classValidators['*'],
+      classValidators[_class] || classValidators.default,
     eachItem(layer: Layer) {
       if (!layer.layers) {
         return [];
       }
-      return validateLayers(layer._class, layer.layers, classValidators, {
+      return validateLayers(layer.layers, classValidators, {
         pathPrefix: `${pathPrefix}/${layer.name}`,
       });
     },

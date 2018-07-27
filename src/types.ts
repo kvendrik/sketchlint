@@ -20,7 +20,8 @@ export interface Validators<T> {
 export interface ValidatorGroups {
   pages?: Validators<Page>;
   layers?: Validators<Layer>;
-  artboards?: Validators<any>;
+  artboards?: Validators<Layer>;
+  groups?: Validators<Layer>;
 }
 
 export interface LintingError {

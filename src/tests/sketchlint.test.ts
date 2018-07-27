@@ -123,7 +123,7 @@ describe('sketchlint', () => {
       );
     });
 
-    it('artboard are not considered layers', async () => {
+    it('objects the layer validators validate dont include artboards', async () => {
       const validatorSpy = jest.fn();
       await sketchlint(basicSketchData, {
         layers: {
@@ -133,6 +133,35 @@ describe('sketchlint', () => {
       expect(validatorSpy).not.toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'v1',
+        }),
+      );
+    });
+
+    it('accepts a seperate artboards validators category', async () => {
+      const validatorSpy = jest.fn();
+      await sketchlint(basicSketchData, {
+        artboards: {
+          testArtboardValidator: validatorSpy,
+        },
+      });
+      expect(validatorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'v1',
+        }),
+      );
+    });
+
+    it('accepts a seperate groups validators category', async () => {
+      const validatorSpy = jest.fn();
+      await sketchlint(basicSketchData, {
+        groups: {
+          testGroupValidator: validatorSpy,
+        },
+      });
+      expect(validatorSpy).toHaveBeenCalledTimes(1);
+      expect(validatorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'header',
         }),
       );
     });
