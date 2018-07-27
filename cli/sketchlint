@@ -18,7 +18,7 @@ function printUsage() {
   console.log('Usage: sketchlint <sketchFilePath> --config <configFilePath>');
 }
 
-if (!configPath) {
+if (!sketchFilePath || !configPath) {
   printUsage();
   process.exit(1);
 }
@@ -64,6 +64,20 @@ function constructResultMessage(lintingErrors) {
     return string;
   }
 
+  function constructErrorDetails(errorString, warningsString) {
+    if (!errorString && !warningsString) {
+      return null;
+    }
+    let details = errorsString;
+    if (warningsString && !errorsString) {
+      details = warningsString;
+    }
+    if (warningsString && errorsString) {
+      details = `${errorsString}, ${warningsString}`;
+    }
+    return `(${details})`;
+  }
+
   const errorCount = getCount('error');
   const warningCount = getCount('warning');
 
@@ -75,18 +89,21 @@ function constructResultMessage(lintingErrors) {
       : '';
 
   const problemCount = errorCount + warningCount;
-  const problemDetails =
-    errorsString || warningsString
-      ? `(${[errorsString, warningsString].join(', ')})`
-      : '';
+  const problemDetails = constructErrorDetails(errorsString, warningsString);
   const problemText = `✖ ${problemCount} ${formatPlural(
     'problem',
     problemCount,
   )} ${problemDetails}`;
 
+  let message = chalk.green('All good.');
+
+  if (problemCount > 0) {
+    message = errorCount > 0 ? chalk.red(problemText) : chalk.yellow(problemText);
+  }
+
   return {
-    message:
-      errorCount > 0 ? chalk.red(problemText) : chalk.yellow(problemText),
+    message,
     errorCount,
+    problemCount,
   };
 }
