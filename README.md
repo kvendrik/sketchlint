@@ -118,7 +118,7 @@ Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-f
 
 ```ts
 import fs from 'fs';
-import sketchlint, {Page, Layer} from 'sketchlint';
+import sketchlint from 'sketchlint';
 
 const sketchData = fs.readFileSync(`${__dirname}/fixtures/basic.sketch`);
 const lintingErrors = await sketchlint(sketchData, {
