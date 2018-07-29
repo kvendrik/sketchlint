@@ -49,7 +49,7 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
   if (validatorGroups.pages) {
     const pagesErrors = validateGroup<Page, ValidatorGroups['pages']>(pages, {
       getCategory: () => 'pages',
-      getValidators: () => validatorGroups.pages,
+      getValidators: () => validatorGroups.pages!,
       getPath: ({name}: Page) => name,
     });
     lintingErrors = [...lintingErrors, ...pagesErrors];

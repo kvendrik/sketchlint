@@ -6,7 +6,7 @@ interface ValidateItemOptions<I> {
 }
 
 interface ValidateGroupOptions<I, V> extends ValidateItemOptions<I> {
-  getValidators: (item: I) => Validators<V> | undefined;
+  getValidators: (item: I) => Validators<V>;
   eachItem?(item: I): LintingError[];
 }
 
@@ -44,10 +44,6 @@ export default function validateGroup<I, V>(
 
     if (eachItem) {
       errors = [...errors, ...eachItem(item)];
-    }
-
-    if (!validators) {
-      continue;
     }
 
     errors = [

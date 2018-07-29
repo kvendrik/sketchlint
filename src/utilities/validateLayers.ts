@@ -6,10 +6,8 @@ interface Options {
   getCategory(className: string): Category;
 }
 
-type ClassValidators = Validators<any>;
-
 interface ClassValidatorsGroups {
-  [className: string]: ClassValidators;
+  [className: string]: Validators<Layer>;
 }
 
 function validateLayers(
@@ -17,7 +15,7 @@ function validateLayers(
   classValidators: ClassValidatorsGroups,
   {getCategory, pathPrefix}: Options,
 ): LintingError[] {
-  return validateGroup<Layer, ClassValidators>(layers, {
+  return validateGroup<Layer, Validators<Layer>>(layers, {
     getCategory,
     getPath: ({name}: Layer) => `${pathPrefix}/${name}`,
     getValidators: ({_class}: Layer) =>
