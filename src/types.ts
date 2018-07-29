@@ -24,19 +24,14 @@ export interface Validators<T> {
   [ruleName: string]: (data: T) => ValidatorError | void;
 }
 
-export type ValidatorGroup =
-  | 'pages'
-  | 'layers'
-  | 'artboards'
-  | 'groups'
-  | 'meta';
+export type Category = 'pages' | 'layers' | 'artboards' | 'groups' | 'meta';
 
 export interface ValidatorGroups {
   pages?: Validators<Page>;
+  meta?: Validators<Meta>;
   layers?: Validators<Layer>;
   artboards?: Validators<Layer>;
   groups?: Validators<Layer>;
-  meta?: Validators<Meta>;
 }
 
 export interface LintingError {
@@ -44,5 +39,5 @@ export interface LintingError {
   message: string;
   type: ErrorType;
   path: string;
-  category: ValidatorGroup;
+  category: Category;
 }

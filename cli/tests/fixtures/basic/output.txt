@@ -1,7 +1,7 @@
 page-about
-error Page name "page-about" contains forbidden "page" prefix. noPagePrefix
+error Page name "page-about" contains forbidden "page" prefix. pages.noPagePrefix
 
 homepage/v1/box/title
-warning text "Yeey!" may not contain an exclamation mark. noExclamationMark
+warning text "Yeey!" may not contain an exclamation mark. layers.noExclamationMark
 
 ✖ 2 problems (1 error, 1 warning)

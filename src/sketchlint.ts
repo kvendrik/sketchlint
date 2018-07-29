@@ -1,7 +1,7 @@
 import * as sketch2json from 'sketch2json';
 import validateGroup from './utilities/validateGroup';
 import validateLayers from './utilities/validateLayers';
-import {ValidatorGroups, LintingError, Page, Layer} from './types';
+import {LintingError, Page, ValidatorGroups} from './types';
 
 async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
   const sketchJSON = await sketch2json(sketchData);

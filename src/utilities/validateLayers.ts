@@ -1,9 +1,9 @@
 import validateGroup from './validateGroup';
-import {Layer, LintingError, Validators, ValidatorGroup} from '../types';
+import {Layer, LintingError, Validators, Category} from '../types';
 
 interface Options {
   pathPrefix: string;
-  getCategory(className: string): ValidatorGroup;
+  getCategory(className: string): Category;
 }
 
 type ClassValidators = Validators<any>;

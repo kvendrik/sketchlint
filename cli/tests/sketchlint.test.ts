@@ -88,6 +88,13 @@ describe('sketchlint-cli', () => {
       expect(resultOut).toContain('noExclamationMark');
     });
 
+    it('shows the category', () => {
+      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      const resultOut = result.toString();
+      expect(resultOut).toContain('layers');
+      expect(resultOut).toContain('pages');
+    });
+
     it('shows the error messages', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
       const resultOut = result.toString();

@@ -37,10 +37,10 @@ const config = require(path.resolve(process.cwd(), configPath));
 const sketchData = fs.readFileSync(sketchFilePath);
 
 sketchlint.default(sketchData, config).then(lintingErrors => {
-  for (const {ruleID, message, type, path} of lintingErrors) {
+  for (const {category, ruleID, message, type, path} of lintingErrors) {
     const coloredPath = chalk.underline(path);
     const coloredType = type === 'error' ? chalk.red(type) : chalk.yellow(type);
-    const coloredRule = chalk.grey(ruleID);
+    const coloredRule = chalk.grey(`${category}.${ruleID}`);
     console.log(`${coloredPath}\n${coloredType} ${message} ${coloredRule}\n`);
   }
   const {message, errorCount} = constructResultMessage(lintingErrors);

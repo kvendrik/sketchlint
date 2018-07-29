@@ -1,8 +1,8 @@
-import {ErrorType, LintingError, Validators, ValidatorGroup} from '../types';
+import {ErrorType, LintingError, Validators, Category} from '../types';
 
 interface Options<I, V> {
   getValidators: (item: I) => Validators<V> | undefined;
-  getCategory(className: string): ValidatorGroup;
+  getCategory(className: string): Category;
   getPath(item: I): string;
   eachItem?(item: I): LintingError[];
 }
