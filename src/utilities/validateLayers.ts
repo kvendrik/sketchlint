@@ -22,12 +22,12 @@ function validateLayers(
     getPath: ({name}: Layer) => `${pathPrefix}/${name}`,
     getValidators: ({_class}: Layer) =>
       classValidators[_class] || classValidators.default,
-    eachItem(layer: Layer) {
-      if (!layer.layers) {
+    eachItem({layers: childLayers, name}: Layer) {
+      if (!childLayers) {
         return [];
       }
-      return validateLayers(layer.layers, classValidators, {
-        pathPrefix: `${pathPrefix}/${layer.name}`,
+      return validateLayers(childLayers, classValidators, {
+        pathPrefix: `${pathPrefix}/${name}`,
         getCategory,
       });
     },
