@@ -84,7 +84,7 @@ module.exports = {
 
 Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-format-in-sketch-43)) Sketch file and it will make sure it complies with your rules. Here we run Sketchlint against a Sketch file called `my-design.sketch`:
 
-```bash
+```
 sketchlint my-design.sketch --config sketchlint.config.js
 
 page-about
