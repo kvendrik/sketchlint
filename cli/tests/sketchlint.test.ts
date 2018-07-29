@@ -71,7 +71,7 @@ describe('sketchlint-cli', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
       const resultOut = result.toString();
       expect(resultOut).toContain('page-about');
-      expect(resultOut).toContain('homepage/v1/box/title');
+      expect(resultOut).toContain('homepage/V1/_black box/title');
     });
 
     it('shows the error types', () => {
@@ -108,7 +108,9 @@ describe('sketchlint-cli', () => {
 
     it('shows a summary', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
-      expect(result.toString()).toContain('✖ 2 problems (1 error, 1 warning)');
+      expect(result.toString()).toContain(
+        '✖ 6 problems (4 errors, 2 warnings)',
+      );
     });
 
     it('uses sigular language when there is only a single problem', () => {

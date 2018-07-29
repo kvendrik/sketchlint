@@ -1,7 +1,17 @@
 page-about
 error Page name "page-about" contains forbidden "page" prefix. pages.noPagePrefix
 
-homepage/v1/box/title
+meta
+error Font "BrandonText-Bold" is not allowed. Please only use on-brand font families. meta.noCustomFonts
+
+homepage/V1/_black box/title
 warning text "Yeey!" may not contain an exclamation mark. layers.noExclamationMark
 
-✖ 2 problems (1 error, 1 warning)
+homepage/V1/_black box
+error Underscores are not allowed in group names. groups.noUnderscore
+error Spaces are not allowed in group names. groups.noSpaces
+
+homepage/V1
+warning Capitalization of artboard names is not recommended. artboards.noCapitalization
+
+✖ 6 problems (4 errors, 2 warnings)
