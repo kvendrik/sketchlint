@@ -1,14 +1,15 @@
-import {ErrorType, LintingError, Validators} from '../types';
+import {ErrorType, LintingError, Validators, ValidatorGroup} from '../types';
 
 interface Options<I, V> {
   getValidators: (item: I) => Validators<V> | undefined;
+  getCategory(className: string): ValidatorGroup;
   getPath(item: I): string;
   eachItem?(item: I): LintingError[];
 }
 
 function validateGroup<I, V>(
   items: I[],
-  {getValidators, getPath, eachItem}: Options<I, V>,
+  {getCategory, getValidators, getPath, eachItem}: Options<I, V>,
 ): LintingError[] {
   let errors: LintingError[] = [];
 
@@ -33,6 +34,7 @@ function validateGroup<I, V>(
           message: error[1],
           type: error[0] as ErrorType,
           path: getPath(item),
+          category: getCategory((item as any)._class),
         });
       }
     }

@@ -1,8 +1,9 @@
 import validateGroup from './validateGroup';
-import {Layer, LintingError, Validators} from '../types';
+import {Layer, LintingError, Validators, ValidatorGroup} from '../types';
 
 interface Options {
   pathPrefix: string;
+  getCategory(className: string): ValidatorGroup;
 }
 
 type ClassValidators = Validators<any>;
@@ -14,9 +15,10 @@ interface ClassValidatorsGroups {
 function validateLayers(
   layers: Layer[],
   classValidators: ClassValidatorsGroups,
-  {pathPrefix}: Options,
+  {getCategory, pathPrefix}: Options,
 ): LintingError[] {
   return validateGroup<Layer, ClassValidators>(layers, {
+    getCategory,
     getPath: ({name}: Layer) => `${pathPrefix}/${name}`,
     getValidators: ({_class}: Layer) =>
       classValidators[_class] || classValidators.default,
@@ -26,6 +28,7 @@ function validateLayers(
       }
       return validateLayers(layer.layers, classValidators, {
         pathPrefix: `${pathPrefix}/${layer.name}`,
+        getCategory,
       });
     },
   });
