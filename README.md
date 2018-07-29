@@ -32,6 +32,41 @@ module.exports = {
       }
     },
   },
+  artboards: {
+    noCapitalization({name}) {
+      if (/^[A-Z]/.test(name)) {
+        return [
+          'warning',
+          `Capitalization of artboard names is not recommended.`,
+        ];
+      }
+    },
+  },
+  groups: {
+    noUnderscore({name}) {
+      if (name.includes('_')) {
+        return ['error', `Underscores are not allowed in group names.`];
+      }
+    },
+    noSpaces({name}) {
+      if (name.match(/\s+/)) {
+        return ['error', `Spaces are not allowed in group names.`];
+      }
+    },
+  },
+  meta: {
+    noCustomFonts({fonts}) {
+      const allowedFonts = ['Arial'];
+      for (const font of fonts) {
+        if (!allowedFonts.includes(font)) {
+          return [
+            'error',
+            `Font "${font}" is not allowed. Please only use on-brand font families.`,
+          ];
+        }
+      }
+    },
+  },
   layers: {
     noExclamationMark({attributedString}) {
       if (attributedString && attributedString.string.includes('!')) {
@@ -53,12 +88,22 @@ Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-f
 sketchlint my-design.sketch --config sketchlint.config.js
 
 page-about
-  error Page name "page-about" contains forbidden "page" prefix. noPagePrefix
+error Page name "page-about" contains forbidden "page" prefix. pages.noPagePrefix
 
-homepage/v1/box/title
-  warning text "Yeey!" may not contain an exclamation mark. noExclamationMark
+meta
+error Font "BrandonText-Bold" is not allowed. Please only use on-brand font families. meta.noCustomFonts
 
-✖ 2 problems (1 error, 1 warning)
+homepage/V1/_black box/title
+warning text "Yeey!" may not contain an exclamation mark. layers.noExclamationMark
+
+homepage/V1/_black box
+error Underscores are not allowed in group names. groups.noUnderscore
+error Spaces are not allowed in group names. groups.noSpaces
+
+homepage/V1
+warning Capitalization of artboard names is not recommended. artboards.noCapitalization
+
+✖ 6 problems (4 errors, 2 warnings)
 ```
 
 ## Getting Started (Node)
@@ -78,7 +123,7 @@ import sketchlint, {Page, Layer} from 'sketchlint';
 const sketchData = fs.readFileSync(`${__dirname}/fixtures/basic.sketch`);
 const lintingErrors = await sketchlint(sketchData, {
   pages: {
-    noPagePrefix({name}: Page) {
+    noPagePrefix({name}) {
       if (name.toLowerCase().indexOf('page') === 0) {
         return [
           'error',
@@ -87,8 +132,43 @@ const lintingErrors = await sketchlint(sketchData, {
       }
     },
   },
+  artboards: {
+    noCapitalization({name}) {
+      if (/^[A-Z]/.test(name)) {
+        return [
+          'warning',
+          `Capitalization of artboard names is not recommended.`,
+        ];
+      }
+    },
+  },
+  groups: {
+    noUnderscore({name}) {
+      if (name.includes('_')) {
+        return ['error', `Underscores are not allowed in group names.`];
+      }
+    },
+    noSpaces({name}) {
+      if (name.match(/\s+/)) {
+        return ['error', `Spaces are not allowed in group names.`];
+      }
+    },
+  },
+  meta: {
+    noCustomFonts({fonts}) {
+      const allowedFonts = ['Arial'];
+      for (const font of fonts) {
+        if (!allowedFonts.includes(font)) {
+          return [
+            'error',
+            `Font "${font}" is not allowed. Please only use on-brand font families.`,
+          ];
+        }
+      }
+    },
+  },
   layers: {
-    noExclamationMark({attributedString}: Layer) {
+    noExclamationMark({attributedString}) {
       if (attributedString && attributedString.string.includes('!')) {
         return [
           'warning',
