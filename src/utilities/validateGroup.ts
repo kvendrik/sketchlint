@@ -1,15 +1,41 @@
 import {ErrorType, LintingError, Validators, Category} from '../types';
 
-interface Options<I, V> {
-  getValidators: (item: I) => Validators<V> | undefined;
+interface ValidateItemOptions<I> {
   getCategory(className: string): Category;
   getPath(item: I): string;
+}
+
+interface ValidateGroupOptions<I, V> extends ValidateItemOptions<I> {
+  getValidators: (item: I) => Validators<V> | undefined;
   eachItem?(item: I): LintingError[];
 }
 
-function validateGroup<I, V>(
+export function validateItem<I, V>(
+  item: I,
+  validators: Validators<V>,
+  {getPath, getCategory}: ValidateItemOptions<I>,
+) {
+  const errors: LintingError[] = [];
+  for (const ruleID of Object.keys(validators)) {
+    const validator = (validators as any)[ruleID];
+    const error = validator(item);
+
+    if (error) {
+      errors.push({
+        ruleID,
+        message: error[1],
+        type: error[0] as ErrorType,
+        path: getPath(item),
+        category: getCategory((item as any)._class),
+      });
+    }
+  }
+  return errors;
+}
+
+export default function validateGroup<I, V>(
   items: I[],
-  {getCategory, getValidators, getPath, eachItem}: Options<I, V>,
+  {getCategory, getValidators, getPath, eachItem}: ValidateGroupOptions<I, V>,
 ): LintingError[] {
   let errors: LintingError[] = [];
 
@@ -24,23 +50,11 @@ function validateGroup<I, V>(
       continue;
     }
 
-    for (const ruleID of Object.keys(validators)) {
-      const validator = (validators as any)[ruleID];
-      const error = validator(item);
-
-      if (error) {
-        errors.push({
-          ruleID,
-          message: error[1],
-          type: error[0] as ErrorType,
-          path: getPath(item),
-          category: getCategory((item as any)._class),
-        });
-      }
-    }
+    errors = [
+      ...errors,
+      ...validateItem<I, V>(item, validators, {getPath, getCategory}),
+    ];
   }
 
   return errors;
 }
-
-export default validateGroup;

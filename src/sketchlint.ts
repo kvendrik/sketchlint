@@ -1,41 +1,19 @@
 import * as sketch2json from 'sketch2json';
-import validateGroup from './utilities/validateGroup';
+import validateGroup, {validateItem} from './utilities/validateGroup';
 import validateLayers from './utilities/validateLayers';
-import {LintingError, Page, ValidatorGroups} from './types';
+import {LintingError, Page, Validators, Meta, Layer} from './types';
 
-async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
-  const sketchJSON = await sketch2json(sketchData);
-  const pages: Page[] = Object.values(sketchJSON.pages);
-  let lintingErrors: LintingError[] = [];
+interface ValidatorGroups {
+  pages?: Validators<Page>;
+  meta?: Validators<Meta>;
+  layers?: Validators<Layer>;
+  artboards?: Validators<Layer>;
+  groups?: Validators<Layer>;
+}
 
-  if (validatorGroups.pages) {
-    const pagesErrors = validateGroup<Page, ValidatorGroups['pages']>(pages, {
-      getCategory: () => 'pages',
-      getValidators: () => validatorGroups.pages,
-      getPath: ({name}: Page) => name,
-    });
-    lintingErrors = [...lintingErrors, ...pagesErrors];
-  }
-
-  if (validatorGroups.meta) {
-    for (const ruleID of Object.keys(validatorGroups.meta)) {
-      const validator = validatorGroups.meta[ruleID];
-      const error = validator(sketchJSON.meta);
-      if (error) {
-        lintingErrors.push({
-          ruleID,
-          message: error[1],
-          type: error[0],
-          path: 'meta',
-          category: 'meta',
-        });
-      }
-    }
-  }
-
-  for (const page of pages) {
-    const {layers, name} = page;
-    const layersErrors = validateLayers(
+function lintLayersForPages(pages: Page[], validatorGroups: ValidatorGroups) {
+  function lintLayerForPage({layers, name}: Page) {
+    return validateLayers(
       layers,
       {
         default: validatorGroups.layers || {},
@@ -54,10 +32,42 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
         pathPrefix: name,
       },
     );
-    lintingErrors = [...lintingErrors, ...layersErrors];
   }
 
+  let lintingErrors: LintingError[] = [];
+  for (const page of pages) {
+    lintingErrors = [...lintingErrors, ...lintLayerForPage(page)];
+  }
   return lintingErrors;
+}
+
+async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
+  const sketchJSON = await sketch2json(sketchData);
+  const pages: Page[] = Object.values(sketchJSON.pages);
+  let lintingErrors: LintingError[] = [];
+
+  if (validatorGroups.pages) {
+    const pagesErrors = validateGroup<Page, ValidatorGroups['pages']>(pages, {
+      getCategory: () => 'pages',
+      getValidators: () => validatorGroups.pages,
+      getPath: ({name}: Page) => name,
+    });
+    lintingErrors = [...lintingErrors, ...pagesErrors];
+  }
+
+  if (validatorGroups.meta) {
+    const metaErrors = validateItem<Meta, ValidatorGroups['meta']>(
+      sketchJSON.meta,
+      validatorGroups.meta,
+      {
+        getPath: () => 'meta',
+        getCategory: () => 'meta',
+      },
+    );
+    lintingErrors = [...lintingErrors, ...metaErrors];
+  }
+
+  return [...lintingErrors, ...lintLayersForPages(pages, validatorGroups)];
 }
 
 export default sketchlint;
