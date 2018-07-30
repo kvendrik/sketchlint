@@ -4,6 +4,9 @@ error Page name "page-about" contains forbidden "page" prefix. pages.noPagePrefi
 meta
 error Font "BrandonText-Bold" is not allowed. Please only use on-brand font families. meta.noCustomFonts
 
+document
+warning Document color #4545C4 is not a brand color. document.noCustomDocumentColors
+
 homepage/V1/_black box/title
 warning text "Yeey!" may not contain an exclamation mark. layers.noExclamationMark
 
@@ -14,4 +17,4 @@ error Spaces are not allowed in group names. groups.noSpaces
 homepage/V1
 warning Capitalization of artboard names is not recommended. artboards.noCapitalization
 
-✖ 6 problems (4 errors, 2 warnings)
+✖ 7 problems (4 errors, 3 warnings)

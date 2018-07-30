@@ -21,6 +21,8 @@ yarn global add sketchlint
 Then, create a file named `sketchlint.config.js`. This will contain our rules:
 
 ```js
+const Color = require('color');
+
 module.exports = {
   pages: {
     noPagePrefix({name}) {
@@ -79,6 +81,21 @@ module.exports = {
       }
     },
   },
+  document: {
+    noCustomDocumentColors({assets: {colors}}) {
+      const brandColors = ['#000000', '#01689b'];
+
+      for (const {red, green, blue} of colors) {
+        const hexColor = Color.rgb(red * 255, green * 255, blue * 255).hex();
+        if (!brandColors.includes(hexColor)) {
+          return [
+            'warning',
+            `Document color ${hexColor} is not a brand color.`,
+          ];
+        }
+      }
+    },
+  },
 };
 ```
 
@@ -93,6 +110,9 @@ error Page name "page-about" contains forbidden "page" prefix. pages.noPagePrefi
 meta
 error Font "BrandonText-Bold" is not allowed. Please only use on-brand font families. meta.noCustomFonts
 
+document
+warning Document color #4545C4 is not a brand color. document.noCustomDocumentColors
+
 homepage/V1/_black box/title
 warning text "Yeey!" may not contain an exclamation mark. layers.noExclamationMark
 
@@ -103,7 +123,7 @@ error Spaces are not allowed in group names. groups.noSpaces
 homepage/V1
 warning Capitalization of artboard names is not recommended. artboards.noCapitalization
 
-✖ 6 problems (4 errors, 2 warnings)
+✖ 7 problems (4 errors, 3 warnings)
 ```
 
 ## Getting Started (Node)
@@ -119,6 +139,7 @@ Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-f
 ```ts
 import fs from 'fs';
 import sketchlint from 'sketchlint';
+import Color from 'color';
 
 const sketchData = fs.readFileSync(`${__dirname}/fixtures/basic.sketch`);
 const lintingErrors = await sketchlint(sketchData, {
@@ -176,6 +197,21 @@ const lintingErrors = await sketchlint(sketchData, {
             attributedString.string
           }" may not contain an exclamation mark.`,
         ];
+      }
+    },
+  },
+  document: {
+    noCustomDocumentColors({assets: {colors}}) {
+      const brandColors = ['#000000', '#01689b'];
+
+      for (const {red, green, blue} of colors) {
+        const hexColor = Color.rgb(red * 255, green * 255, blue * 255).hex();
+        if (!brandColors.includes(hexColor)) {
+          return [
+            'warning',
+            `Document color ${hexColor} is not a brand color.`,
+          ];
+        }
       }
     },
   },

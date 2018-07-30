@@ -1,3 +1,5 @@
+const Color = require('color');
+
 module.exports = {
   pages: {
     noPagePrefix({name}) {
@@ -53,6 +55,21 @@ module.exports = {
             attributedString.string
           }" may not contain an exclamation mark.`,
         ];
+      }
+    },
+  },
+  document: {
+    noCustomDocumentColors({assets: {colors}}) {
+      const brandColors = ['#000000', '#01689b'];
+
+      for (const {red, green, blue} of colors) {
+        const hexColor = Color.rgb(red * 255, green * 255, blue * 255).hex();
+        if (!brandColors.includes(hexColor)) {
+          return [
+            'warning',
+            `Document color ${hexColor} is not a brand color.`,
+          ];
+        }
       }
     },
   },

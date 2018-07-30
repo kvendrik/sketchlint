@@ -108,9 +108,7 @@ describe('sketchlint-cli', () => {
 
     it('shows a summary', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
-      expect(result.toString()).toContain(
-        '✖ 6 problems (4 errors, 2 warnings)',
-      );
+      expect(result.toString()).toContain('7 problems (4 errors, 3 warnings)');
     });
 
     it('uses sigular language when there is only a single problem', () => {

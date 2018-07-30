@@ -5,7 +5,6 @@ interface DynamicBase {
 export type Layer = DynamicBase;
 export type Meta = DynamicBase;
 export type Document = DynamicBase;
-export type User = DynamicBase;
 
 export interface Page extends DynamicBase {
   name: string;
@@ -23,7 +22,6 @@ export interface ValidatorGroups {
   pages?: Validators<Page>;
   meta?: Validators<Meta>;
   document?: Validators<Document>;
-  user?: Validators<User>;
   layers?: Validators<Layer>;
   artboards?: Validators<Layer>;
   groups?: Validators<Layer>;

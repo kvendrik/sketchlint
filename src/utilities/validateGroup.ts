@@ -3,7 +3,6 @@ import {ErrorType, LintingError, Validators, Category} from '../types';
 interface ValidateItemOptions<I> {
   getCategory(className: string): Category;
   getPath(item: I): string;
-  getMetaData?(category: Category): any[];
 }
 
 interface ValidateGroupOptions<I, V> extends ValidateItemOptions<I> {
@@ -14,15 +13,13 @@ interface ValidateGroupOptions<I, V> extends ValidateItemOptions<I> {
 export function validateItem<I, V>(
   item: I,
   validators: Validators<V>,
-  {getPath, getCategory, getMetaData}: ValidateItemOptions<I>,
+  {getPath, getCategory}: ValidateItemOptions<I>,
 ) {
   const errors: LintingError[] = [];
   for (const ruleID of Object.keys(validators)) {
     const validator = (validators as any)[ruleID];
     const category = getCategory((item as any)._class);
-    const error = getMetaData
-      ? validator(item, ...getMetaData(category))
-      : validator(item);
+    const error = validator(item);
 
     if (error) {
       errors.push({

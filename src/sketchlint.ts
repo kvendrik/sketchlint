@@ -47,7 +47,7 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
     lintingErrors = [...lintingErrors, ...pagesErrors];
   }
 
-  const singleItemCategories: Category[] = ['meta', 'document', 'user'];
+  const singleItemCategories: Category[] = ['meta', 'document'];
 
   for (const category of singleItemCategories) {
     const data = sketchJSON[category];
@@ -57,12 +57,6 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
       const categoryErrors = validateItem(data, validators, {
         getPath: () => category,
         getCategory: () => category,
-        getMetaData(categoryName: Category) {
-          if (categoryName === 'user') {
-            return [sketchJSON.pages];
-          }
-          return [];
-        },
       });
       lintingErrors = [...lintingErrors, ...categoryErrors];
     }

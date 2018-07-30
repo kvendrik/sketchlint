@@ -49,25 +49,6 @@ describe('sketchlint', () => {
     }),
   );
 
-  describe(
-    'user',
-    getDefaultTestsForValidatorGroup('user', {
-      expectedValidatorData: [
-        expect.objectContaining({
-          'CFC4CFC4-B632-4A4B-ACAA-80FA9174AB61': expect.objectContaining({
-            zoomValue: 1,
-          }),
-        }),
-        expect.objectContaining({
-          'CFC4CFC4-B632-4A4B-ACAA-80FA9174AB61': expect.objectContaining({
-            name: 'page-about',
-          }),
-        }),
-      ],
-      mockSketchData: basicSketchData,
-    }),
-  );
-
   describe('layers', () => {
     getDefaultTestsForValidatorGroup('layers', {
       expectedValidatorData: [
