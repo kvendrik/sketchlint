@@ -57,6 +57,12 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
       const categoryErrors = validateItem(data, validators, {
         getPath: () => category,
         getCategory: () => category,
+        getMetaData(categoryName: Category) {
+          if (categoryName === 'user') {
+            return [sketchJSON.pages];
+          }
+          return [];
+        },
       });
       lintingErrors = [...lintingErrors, ...categoryErrors];
     }

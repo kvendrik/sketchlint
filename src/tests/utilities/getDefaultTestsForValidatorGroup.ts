@@ -32,7 +32,7 @@ export default function getDefaultTestsForValidatorGroup(
           testValidator: validatorSpy,
         },
       });
-      expect(validatorSpy).toHaveBeenCalledWith(expectedValidatorData);
+      expect(validatorSpy).toHaveBeenCalledWith(...expectedValidatorData);
     });
 
     it('includes the ruleID', async () => {

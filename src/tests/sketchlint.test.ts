@@ -14,9 +14,11 @@ describe('sketchlint', () => {
   describe(
     'pages',
     getDefaultTestsForValidatorGroup('pages', {
-      expectedValidatorData: expect.objectContaining({
-        name: expect.any(String),
-      }),
+      expectedValidatorData: [
+        expect.objectContaining({
+          name: 'page-about',
+        }),
+      ],
       mockSketchData: basicSketchData,
     }),
   );
@@ -24,9 +26,11 @@ describe('sketchlint', () => {
   describe(
     'meta',
     getDefaultTestsForValidatorGroup('meta', {
-      expectedValidatorData: expect.objectContaining({
-        fonts: expect.any(Array),
-      }),
+      expectedValidatorData: [
+        expect.objectContaining({
+          fonts: ['BrandonText-Bold'],
+        }),
+      ],
       mockSketchData: basicSketchData,
     }),
   );
@@ -34,11 +38,13 @@ describe('sketchlint', () => {
   describe(
     'document',
     getDefaultTestsForValidatorGroup('document', {
-      expectedValidatorData: expect.objectContaining({
-        assets: expect.objectContaining({
-          colors: expect.any(Array),
+      expectedValidatorData: [
+        expect.objectContaining({
+          assets: expect.objectContaining({
+            colors: expect.any(Array),
+          }),
         }),
-      }),
+      ],
       mockSketchData: basicSketchData,
     }),
   );
@@ -46,20 +52,29 @@ describe('sketchlint', () => {
   describe(
     'user',
     getDefaultTestsForValidatorGroup('user', {
-      expectedValidatorData: expect.objectContaining({
-        document: expect.objectContaining({
-          cloudShare: null,
+      expectedValidatorData: [
+        expect.objectContaining({
+          'CFC4CFC4-B632-4A4B-ACAA-80FA9174AB61': expect.objectContaining({
+            zoomValue: 1,
+          }),
         }),
-      }),
+        expect.objectContaining({
+          'CFC4CFC4-B632-4A4B-ACAA-80FA9174AB61': expect.objectContaining({
+            name: 'page-about',
+          }),
+        }),
+      ],
       mockSketchData: basicSketchData,
     }),
   );
 
   describe('layers', () => {
     getDefaultTestsForValidatorGroup('layers', {
-      expectedValidatorData: expect.objectContaining({
-        name: expect.any(String),
-      }),
+      expectedValidatorData: [
+        expect.objectContaining({
+          name: expect.any(String),
+        }),
+      ],
       mockSketchData: basicSketchData,
     })();
 
@@ -82,9 +97,11 @@ describe('sketchlint', () => {
 
   describe('artboards', () => {
     getDefaultTestsForValidatorGroup('artboards', {
-      expectedValidatorData: expect.objectContaining({
-        name: expect.any(String),
-      }),
+      expectedValidatorData: [
+        expect.objectContaining({
+          name: expect.any(String),
+        }),
+      ],
       mockSketchData: basicSketchData,
     })();
 
@@ -105,9 +122,11 @@ describe('sketchlint', () => {
 
   describe('groups', () => {
     getDefaultTestsForValidatorGroup('groups', {
-      expectedValidatorData: expect.objectContaining({
-        name: expect.any(String),
-      }),
+      expectedValidatorData: [
+        expect.objectContaining({
+          name: expect.any(String),
+        }),
+      ],
       mockSketchData: groupsSketchData,
     })();
 
