@@ -1,15 +1,7 @@
 import * as sketch2json from 'sketch2json';
 import validateGroup, {validateItem} from './utilities/validateGroup';
 import validateLayers from './utilities/validateLayers';
-import {LintingError, Page, Validators, Meta, Layer} from './types';
-
-interface ValidatorGroups {
-  pages?: Validators<Page>;
-  meta?: Validators<Meta>;
-  layers?: Validators<Layer>;
-  artboards?: Validators<Layer>;
-  groups?: Validators<Layer>;
-}
+import {LintingError, Page, ValidatorGroups, Category} from './types';
 
 function lintLayersForPages(pages: Page[], validatorGroups: ValidatorGroups) {
   function lintLayerForPage({layers, name}: Page) {
@@ -55,16 +47,19 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
     lintingErrors = [...lintingErrors, ...pagesErrors];
   }
 
-  if (validatorGroups.meta) {
-    const metaErrors = validateItem<Meta, ValidatorGroups['meta']>(
-      sketchJSON.meta,
-      validatorGroups.meta,
-      {
-        getPath: () => 'meta',
-        getCategory: () => 'meta',
-      },
-    );
-    lintingErrors = [...lintingErrors, ...metaErrors];
+  const singleItemCategories: Category[] = ['meta', 'document', 'user'];
+
+  for (const category of singleItemCategories) {
+    const data = sketchJSON[category];
+    const validators = (validatorGroups as any)[category];
+
+    if (validators) {
+      const categoryErrors = validateItem(data, validators, {
+        getPath: () => category,
+        getCategory: () => category,
+      });
+      lintingErrors = [...lintingErrors, ...categoryErrors];
+    }
   }
 
   return [...lintingErrors, ...lintLayersForPages(pages, validatorGroups)];

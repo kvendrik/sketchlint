@@ -31,6 +31,30 @@ describe('sketchlint', () => {
     }),
   );
 
+  describe(
+    'document',
+    getDefaultTestsForValidatorGroup('document', {
+      expectedValidatorData: expect.objectContaining({
+        assets: expect.objectContaining({
+          colors: expect.any(Array),
+        }),
+      }),
+      mockSketchData: basicSketchData,
+    }),
+  );
+
+  describe(
+    'user',
+    getDefaultTestsForValidatorGroup('user', {
+      expectedValidatorData: expect.objectContaining({
+        document: expect.objectContaining({
+          cloudShare: null,
+        }),
+      }),
+      mockSketchData: basicSketchData,
+    }),
+  );
+
   describe('layers', () => {
     getDefaultTestsForValidatorGroup('layers', {
       expectedValidatorData: expect.objectContaining({
