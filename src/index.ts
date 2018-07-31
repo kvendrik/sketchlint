@@ -1,2 +1,2 @@
-export {default} from './sketchlint';
-export {Page, Layer, ValidatorError} from './types';
+export {default, lintFromJSON} from './sketchlint';
+export {Page, Layer, Meta, Document, ValidatorError} from './types';

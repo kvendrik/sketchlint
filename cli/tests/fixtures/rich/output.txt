@@ -1,0 +1,20 @@
+page-about
+error Page name contains forbidden "page" prefix. pages.noPagePrefix
+
+meta
+error Font "BrandonText-Bold" is not a brand font. meta.noCustomFonts
+
+document
+error Spaces are not allowed in text style names ("page title"). document.noTextStyleNameSpaces
+
+homepage/v1/black box/title
+warning Exclamation marks are not recommended. layers.noExclamationMark
+
+homepage/v1/black box
+warning More than 10 layers in a single group can lead to confusing hierarchies. groups.maxLayers
+error Spaces are not allowed in group names. groups.noSpaces
+
+page-about/v1
+warning Width "350" is not a known screen size. artboards.noUnknownScreenSizes
+
+✖ 7 problems (4 errors, 3 warnings)
