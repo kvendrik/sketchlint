@@ -33,8 +33,10 @@ function lintLayersForPages(pages: Page[], validatorGroups: ValidatorGroups) {
   return lintingErrors;
 }
 
-async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
-  const sketchJSON = await sketch2json(sketchData);
+export function lintFromJSON(
+  sketchJSON: any,
+  validatorGroups: ValidatorGroups,
+) {
   const pages: Page[] = Object.values(sketchJSON.pages);
   let lintingErrors: LintingError[] = [];
 
@@ -63,6 +65,11 @@ async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
   }
 
   return [...lintingErrors, ...lintLayersForPages(pages, validatorGroups)];
+}
+
+async function sketchlint(sketchData: any, validatorGroups: ValidatorGroups) {
+  const sketchJSON = await sketch2json(sketchData);
+  return lintFromJSON(sketchJSON, validatorGroups);
 }
 
 export default sketchlint;
