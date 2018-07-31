@@ -5,7 +5,7 @@ meta
 error Font "BrandonText-Bold" is not a brand font. meta.noCustomFonts
 
 document
-error Spaces are not allowed in text style names ("page title"). document.textStyle
+error Spaces are not allowed in text style names ("page title"). document.noTextStyleNameSpaces
 
 homepage/v1/black box/title
 warning Exclamation marks are not recommended. layers.noExclamationMark
