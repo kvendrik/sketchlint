@@ -21,33 +21,30 @@ yarn global add sketchlint
 Then, create a file named `sketchlint.config.js`. This will contain our rules:
 
 ```js
-const Color = require('color');
-
 module.exports = {
   pages: {
     noPagePrefix({name}) {
       if (name.toLowerCase().indexOf('page') === 0) {
-        return [
-          'error',
-          `Page name "${name}" contains forbidden "page" prefix.`,
-        ];
+        return ['error', `Page name contains forbidden "page" prefix.`];
       }
     },
   },
   artboards: {
-    noCapitalization({name}) {
-      if (/^[A-Z]/.test(name)) {
-        return [
-          'warning',
-          `Capitalization of artboard names is not recommended.`,
-        ];
+    noUnknownScreenSizes({frame: {width}}) {
+      const screenSizes = {mobile: 400, desktop: 1200};
+      if (!Object.values(screenSizes).includes(width)) {
+        return ['warning', `Width "${width}" is not a known screen size.`];
       }
     },
   },
   groups: {
-    noUnderscore({name}) {
-      if (name.includes('_')) {
-        return ['error', `Underscores are not allowed in group names.`];
+    maxLayers({layers}) {
+      const layerCount = layers.length;
+      if (layerCount > 10) {
+        return [
+          'warning',
+          `More than 10 layers in a single group can lead to confusing hierarchies.`,
+        ];
       }
     },
     noSpaces({name}) {
@@ -61,10 +58,7 @@ module.exports = {
       const allowedFonts = ['Arial'];
       for (const font of fonts) {
         if (!allowedFonts.includes(font)) {
-          return [
-            'error',
-            `Font "${font}" is not allowed. Please only use on-brand font families.`,
-          ];
+          return ['error', `Font "${font}" is not a brand font.`];
         }
       }
     },
@@ -72,25 +66,17 @@ module.exports = {
   layers: {
     noExclamationMark({attributedString}) {
       if (attributedString && attributedString.string.includes('!')) {
-        return [
-          'warning',
-          `text "${
-            attributedString.string
-          }" may not contain an exclamation mark.`,
-        ];
+        return ['warning', `Exclamation marks are not recommended.`];
       }
     },
   },
   document: {
-    noCustomDocumentColors({assets: {colors}}) {
-      const brandColors = ['#000000', '#01689b'];
-
-      for (const {red, green, blue} of colors) {
-        const hexColor = Color.rgb(red * 255, green * 255, blue * 255).hex();
-        if (!brandColors.includes(hexColor)) {
+    textStyle({layerTextStyles: {objects: textStyles}}) {
+      for (const {name} of textStyles) {
+        if (name.match(/\s+/)) {
           return [
-            'warning',
-            `Document color ${hexColor} is not a brand color.`,
+            'error',
+            `Spaces are not allowed in text style names ("${name}").`,
           ];
         }
       }
@@ -105,23 +91,23 @@ Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-f
 sketchlint my-design.sketch --config sketchlint.config.js
 
 page-about
-error Page name "page-about" contains forbidden "page" prefix. pages.noPagePrefix
+error Page name contains forbidden "page" prefix. pages.noPagePrefix
 
 meta
-error Font "BrandonText-Bold" is not allowed. Please only use on-brand font families. meta.noCustomFonts
+error Font "BrandonText-Bold" is not a brand font. meta.noCustomFonts
 
 document
-warning Document color #4545C4 is not a brand color. document.noCustomDocumentColors
+error Spaces are not allowed in text style names ("page title"). document.textStyle
 
-homepage/V1/_black box/title
-warning text "Yeey!" may not contain an exclamation mark. layers.noExclamationMark
+homepage/v1/black box/title
+warning Exclamation marks are not recommended. layers.noExclamationMark
 
-homepage/V1/_black box
-error Underscores are not allowed in group names. groups.noUnderscore
+homepage/v1/black box
+warning More than 10 layers in a single group can lead to confusing hierarchies. groups.maxLayers
 error Spaces are not allowed in group names. groups.noSpaces
 
-homepage/V1
-warning Capitalization of artboard names is not recommended. artboards.noCapitalization
+page-about/v1
+warning Width "350" is not a known screen size. artboards.noUnknownScreenSizes
 
 ✖ 7 problems (4 errors, 3 warnings)
 ```
@@ -139,34 +125,32 @@ Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-f
 ```ts
 import fs from 'fs';
 import sketchlint from 'sketchlint';
-import Color from 'color';
 
 const sketchData = fs.readFileSync(`${__dirname}/fixtures/basic.sketch`);
 const lintingErrors = await sketchlint(sketchData, {
   pages: {
     noPagePrefix({name}) {
       if (name.toLowerCase().indexOf('page') === 0) {
-        return [
-          'error',
-          `Page name "${name}" contains forbidden "page" prefix.`,
-        ];
+        return ['error', `Page name contains forbidden "page" prefix.`];
       }
     },
   },
   artboards: {
-    noCapitalization({name}) {
-      if (/^[A-Z]/.test(name)) {
-        return [
-          'warning',
-          `Capitalization of artboard names is not recommended.`,
-        ];
+    noUnknownScreenSizes({frame: {width}}) {
+      const screenSizes = {mobile: 400, desktop: 1200};
+      if (!Object.values(screenSizes).includes(width)) {
+        return ['warning', `Width "${width}" is not a known screen size.`];
       }
     },
   },
   groups: {
-    noUnderscore({name}) {
-      if (name.includes('_')) {
-        return ['error', `Underscores are not allowed in group names.`];
+    maxLayers({layers}) {
+      const layerCount = layers.length;
+      if (layerCount > 10) {
+        return [
+          'warning',
+          `More than 10 layers in a single group can lead to confusing hierarchies.`,
+        ];
       }
     },
     noSpaces({name}) {
@@ -180,10 +164,7 @@ const lintingErrors = await sketchlint(sketchData, {
       const allowedFonts = ['Arial'];
       for (const font of fonts) {
         if (!allowedFonts.includes(font)) {
-          return [
-            'error',
-            `Font "${font}" is not allowed. Please only use on-brand font families.`,
-          ];
+          return ['error', `Font "${font}" is not a brand font.`];
         }
       }
     },
@@ -191,25 +172,17 @@ const lintingErrors = await sketchlint(sketchData, {
   layers: {
     noExclamationMark({attributedString}) {
       if (attributedString && attributedString.string.includes('!')) {
-        return [
-          'warning',
-          `text "${
-            attributedString.string
-          }" may not contain an exclamation mark.`,
-        ];
+        return ['warning', `Exclamation marks are not recommended.`];
       }
     },
   },
   document: {
-    noCustomDocumentColors({assets: {colors}}) {
-      const brandColors = ['#000000', '#01689b'];
-
-      for (const {red, green, blue} of colors) {
-        const hexColor = Color.rgb(red * 255, green * 255, blue * 255).hex();
-        if (!brandColors.includes(hexColor)) {
+    textStyle({layerTextStyles: {objects: textStyles}}) {
+      for (const {name} of textStyles) {
+        if (name.match(/\s+/)) {
           return [
-            'warning',
-            `Document color ${hexColor} is not a brand color.`,
+            'error',
+            `Spaces are not allowed in text style names ("${name}").`,
           ];
         }
       }

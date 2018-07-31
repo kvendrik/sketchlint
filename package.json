@@ -36,7 +36,6 @@
     "@types/shelljs": "^0.8.0",
     "coveralls": "^3.0.2",
     "eslint": "^4.19.1",
-    "color": "^3.0.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.11.0",

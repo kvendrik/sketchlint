@@ -1,20 +1,20 @@
 page-about
-error Page name "page-about" contains forbidden "page" prefix. pages.noPagePrefix
+error Page name contains forbidden "page" prefix. pages.noPagePrefix
 
 meta
-error Font "BrandonText-Bold" is not allowed. Please only use on-brand font families. meta.noCustomFonts
+error Font "BrandonText-Bold" is not a brand font. meta.noCustomFonts
 
 document
-warning Document color #4545C4 is not a brand color. document.noCustomDocumentColors
+error Spaces are not allowed in text style names ("page title"). document.textStyle
 
-homepage/V1/_black box/title
-warning text "Yeey!" may not contain an exclamation mark. layers.noExclamationMark
+homepage/v1/black box/title
+warning Exclamation marks are not recommended. layers.noExclamationMark
 
-homepage/V1/_black box
-error Underscores are not allowed in group names. groups.noUnderscore
+homepage/v1/black box
+warning More than 10 layers in a single group can lead to confusing hierarchies. groups.maxLayers
 error Spaces are not allowed in group names. groups.noSpaces
 
-homepage/V1
-warning Capitalization of artboard names is not recommended. artboards.noCapitalization
+page-about/v1
+warning Width "350" is not a known screen size. artboards.noUnknownScreenSizes
 
 ✖ 7 problems (4 errors, 3 warnings)

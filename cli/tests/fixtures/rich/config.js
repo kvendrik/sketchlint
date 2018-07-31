@@ -1,30 +1,27 @@
-const Color = require('color');
-
 module.exports = {
   pages: {
     noPagePrefix({name}) {
       if (name.toLowerCase().indexOf('page') === 0) {
-        return [
-          'error',
-          `Page name "${name}" contains forbidden "page" prefix.`,
-        ];
+        return ['error', `Page name contains forbidden "page" prefix.`];
       }
     },
   },
   artboards: {
-    noCapitalization({name}) {
-      if (/^[A-Z]/.test(name)) {
-        return [
-          'warning',
-          `Capitalization of artboard names is not recommended.`,
-        ];
+    noUnknownScreenSizes({frame: {width}}) {
+      const screenSizes = {mobile: 400, desktop: 1200};
+      if (!Object.values(screenSizes).includes(width)) {
+        return ['warning', `Width "${width}" is not a known screen size.`];
       }
     },
   },
   groups: {
-    noUnderscore({name}) {
-      if (name.includes('_')) {
-        return ['error', `Underscores are not allowed in group names.`];
+    maxLayers({layers}) {
+      const layerCount = layers.length;
+      if (layerCount > 10) {
+        return [
+          'warning',
+          `More than 10 layers in a single group can lead to confusing hierarchies.`,
+        ];
       }
     },
     noSpaces({name}) {
@@ -38,10 +35,7 @@ module.exports = {
       const allowedFonts = ['Arial'];
       for (const font of fonts) {
         if (!allowedFonts.includes(font)) {
-          return [
-            'error',
-            `Font "${font}" is not allowed. Please only use on-brand font families.`,
-          ];
+          return ['error', `Font "${font}" is not a brand font.`];
         }
       }
     },
@@ -49,25 +43,17 @@ module.exports = {
   layers: {
     noExclamationMark({attributedString}) {
       if (attributedString && attributedString.string.includes('!')) {
-        return [
-          'warning',
-          `text "${
-            attributedString.string
-          }" may not contain an exclamation mark.`,
-        ];
+        return ['warning', `Exclamation marks are not recommended.`];
       }
     },
   },
   document: {
-    noCustomDocumentColors({assets: {colors}}) {
-      const brandColors = ['#000000', '#01689b'];
-
-      for (const {red, green, blue} of colors) {
-        const hexColor = Color.rgb(red * 255, green * 255, blue * 255).hex();
-        if (!brandColors.includes(hexColor)) {
+    textStyle({layerTextStyles: {objects: textStyles}}) {
+      for (const {name} of textStyles) {
+        if (name.match(/\s+/)) {
           return [
-            'warning',
-            `Document color ${hexColor} is not a brand color.`,
+            'error',
+            `Spaces are not allowed in text style names ("${name}").`,
           ];
         }
       }
