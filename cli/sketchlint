@@ -37,16 +37,35 @@ const config = require(path.resolve(process.cwd(), configPath));
 const sketchData = fs.readFileSync(sketchFilePath);
 
 sketchlint.default(sketchData, config).then(lintingErrors => {
-  for (const {ruleID, message, type, path} of lintingErrors) {
-    const coloredPath = chalk.underline(path);
-    const coloredType = type === 'error' ? chalk.red(type) : chalk.yellow(type);
-    const coloredRule = chalk.grey(ruleID);
-    console.log(`${coloredPath}\n${coloredType} ${message} ${coloredRule}\n`);
-  }
-  const {message, errorCount} = constructResultMessage(lintingErrors);
-  console.log(message);
+  const groupedErrors = constructGroupedErrors(lintingErrors);
+  const {message: resultMessage, errorCount} = constructResultMessage(lintingErrors);
+  console.log(groupedErrors + resultMessage);
   process.exit(errorCount > 0 ? 1 : 0);
 });
+
+function constructGroupedErrors(lintingErrors) {
+  const errorsPerPath = {};
+
+  for (const {category, ruleID, message, type, path} of lintingErrors) {
+    const coloredPath = chalk.underline(path);
+    const coloredType = type === 'error' ? chalk.red(type) : chalk.yellow(type);
+    const coloredRule = chalk.grey(`${category}.${ruleID}`);
+
+    if (!errorsPerPath[path]) {
+      errorsPerPath[path] = [];
+    }
+
+    errorsPerPath[path].push(`${coloredType} ${message} ${coloredRule}`);
+  }
+
+  let completeString = '';
+  for (const path in errorsPerPath) {
+    const errors = errorsPerPath[path].join('\n');
+    const underlinedPath = chalk.underline(path);
+    completeString += `${underlinedPath}\n${errors}\n\n`;
+  }
+  return completeString;
+}
 
 function constructResultMessage(lintingErrors) {
   function getCount(forType) {

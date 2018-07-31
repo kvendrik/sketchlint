@@ -71,7 +71,7 @@ describe('sketchlint-cli', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
       const resultOut = result.toString();
       expect(resultOut).toContain('page-about');
-      expect(resultOut).toContain('homepage/v1/box/title');
+      expect(resultOut).toContain('homepage/v1/title');
     });
 
     it('shows the error types', () => {
@@ -88,6 +88,13 @@ describe('sketchlint-cli', () => {
       expect(resultOut).toContain('noExclamationMark');
     });
 
+    it('shows the category', () => {
+      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      const resultOut = result.toString();
+      expect(resultOut).toContain('layers');
+      expect(resultOut).toContain('pages');
+    });
+
     it('shows the error messages', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
       const resultOut = result.toString();
@@ -100,8 +107,8 @@ describe('sketchlint-cli', () => {
     });
 
     it('shows a summary', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      expect(result.toString()).toContain('✖ 2 problems (1 error, 1 warning)');
+      const result = execSketchlint(...getArgumentsForFixture('rich'));
+      expect(result.toString()).toContain('7 problems (4 errors, 3 warnings)');
     });
 
     it('uses sigular language when there is only a single problem', () => {
@@ -109,16 +116,9 @@ describe('sketchlint-cli', () => {
       expect(result.toString()).toContain('✖ 1 problem');
     });
 
-    it('uses plurals when there are multiple problems', () => {
-      const result = execSketchlint(...getArgumentsForFixture('rich'));
-      expect(result.toString()).toContain(
-        '✖ 4 problems (2 errors, 2 warnings)',
-      );
-    });
-
     it('applies the right formatting', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      const expectedOutput = getExpectedOutputForFixture('basic');
+      const result = execSketchlint(...getArgumentsForFixture('rich'));
+      const expectedOutput = getExpectedOutputForFixture('rich');
       expect(result.toString()).toBe(expectedOutput);
     });
 

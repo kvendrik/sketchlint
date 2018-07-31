@@ -25,22 +25,60 @@ module.exports = {
   pages: {
     noPagePrefix({name}) {
       if (name.toLowerCase().indexOf('page') === 0) {
+        return ['error', `Page name contains forbidden "page" prefix.`];
+      }
+    },
+  },
+  artboards: {
+    noUnknownScreenSizes({frame: {width}}) {
+      const screenSizes = {mobile: 400, desktop: 1200};
+      if (!Object.values(screenSizes).includes(width)) {
+        return ['warning', `Width "${width}" is not a known screen size.`];
+      }
+    },
+  },
+  groups: {
+    maxLayers({layers}) {
+      const layerCount = layers.length;
+      if (layerCount > 10) {
         return [
-          'error',
-          `Page name "${name}" contains forbidden "page" prefix.`,
+          'warning',
+          `More than 10 layers in a single group can lead to confusing hierarchies.`,
         ];
+      }
+    },
+    noSpaces({name}) {
+      if (name.match(/\s+/)) {
+        return ['error', `Spaces are not allowed in group names.`];
+      }
+    },
+  },
+  meta: {
+    noCustomFonts({fonts}) {
+      const allowedFonts = ['Arial'];
+      for (const font of fonts) {
+        if (!allowedFonts.includes(font)) {
+          return ['error', `Font "${font}" is not a brand font.`];
+        }
       }
     },
   },
   layers: {
     noExclamationMark({attributedString}) {
       if (attributedString && attributedString.string.includes('!')) {
-        return [
-          'warning',
-          `text "${
-            attributedString.string
-          }" may not contain an exclamation mark.`,
-        ];
+        return ['warning', `Exclamation marks are not recommended.`];
+      }
+    },
+  },
+  document: {
+    textStyle({layerTextStyles: {objects: textStyles}}) {
+      for (const {name} of textStyles) {
+        if (name.match(/\s+/)) {
+          return [
+            'error',
+            `Spaces are not allowed in text style names ("${name}").`,
+          ];
+        }
       }
     },
   },
@@ -49,16 +87,29 @@ module.exports = {
 
 Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-format-in-sketch-43)) Sketch file and it will make sure it complies with your rules. Here we run Sketchlint against a Sketch file called `my-design.sketch`:
 
-```bash
+```
 sketchlint my-design.sketch --config sketchlint.config.js
 
 page-about
-  error Page name "page-about" contains forbidden "page" prefix. noPagePrefix
+error Page name contains forbidden "page" prefix. pages.noPagePrefix
 
-homepage/v1/box/title
-  warning text "Yeey!" may not contain an exclamation mark. noExclamationMark
+meta
+error Font "BrandonText-Bold" is not a brand font. meta.noCustomFonts
 
-✖ 2 problems (1 error, 1 warning)
+document
+error Spaces are not allowed in text style names ("page title"). document.textStyle
+
+homepage/v1/black box/title
+warning Exclamation marks are not recommended. layers.noExclamationMark
+
+homepage/v1/black box
+warning More than 10 layers in a single group can lead to confusing hierarchies. groups.maxLayers
+error Spaces are not allowed in group names. groups.noSpaces
+
+page-about/v1
+warning Width "350" is not a known screen size. artboards.noUnknownScreenSizes
+
+✖ 7 problems (4 errors, 3 warnings)
 ```
 
 ## Getting Started (Node)
@@ -73,29 +124,67 @@ Now run Sketchlint against any ([v43+](https://sketchplugins.com/d/87-new-file-f
 
 ```ts
 import fs from 'fs';
-import sketchlint, {Page, Layer} from 'sketchlint';
+import sketchlint from 'sketchlint';
 
 const sketchData = fs.readFileSync(`${__dirname}/fixtures/basic.sketch`);
 const lintingErrors = await sketchlint(sketchData, {
   pages: {
-    noPagePrefix({name}: Page) {
+    noPagePrefix({name}) {
       if (name.toLowerCase().indexOf('page') === 0) {
+        return ['error', `Page name contains forbidden "page" prefix.`];
+      }
+    },
+  },
+  artboards: {
+    noUnknownScreenSizes({frame: {width}}) {
+      const screenSizes = {mobile: 400, desktop: 1200};
+      if (!Object.values(screenSizes).includes(width)) {
+        return ['warning', `Width "${width}" is not a known screen size.`];
+      }
+    },
+  },
+  groups: {
+    maxLayers({layers}) {
+      const layerCount = layers.length;
+      if (layerCount > 10) {
         return [
-          'error',
-          `Page name "${name}" contains forbidden "page" prefix.`,
+          'warning',
+          `More than 10 layers in a single group can lead to confusing hierarchies.`,
         ];
+      }
+    },
+    noSpaces({name}) {
+      if (name.match(/\s+/)) {
+        return ['error', `Spaces are not allowed in group names.`];
+      }
+    },
+  },
+  meta: {
+    noCustomFonts({fonts}) {
+      const allowedFonts = ['Arial'];
+      for (const font of fonts) {
+        if (!allowedFonts.includes(font)) {
+          return ['error', `Font "${font}" is not a brand font.`];
+        }
       }
     },
   },
   layers: {
-    noExclamationMark({attributedString}: Layer) {
+    noExclamationMark({attributedString}) {
       if (attributedString && attributedString.string.includes('!')) {
-        return [
-          'warning',
-          `text "${
-            attributedString.string
-          }" may not contain an exclamation mark.`,
-        ];
+        return ['warning', `Exclamation marks are not recommended.`];
+      }
+    },
+  },
+  document: {
+    textStyle({layerTextStyles: {objects: textStyles}}) {
+      for (const {name} of textStyles) {
+        if (name.match(/\s+/)) {
+          return [
+            'error',
+            `Spaces are not allowed in text style names ("${name}").`,
+          ];
+        }
       }
     },
   },

@@ -1,7 +1,0 @@
-page-about
-error Page name "page-about" contains forbidden "page" prefix. noPagePrefix
-
-homepage/v1/box/title
-warning text "Yeey!" may not contain an exclamation mark. noExclamationMark
-
-✖ 2 problems (1 error, 1 warning)
