@@ -71,7 +71,7 @@ module.exports = {
     },
   },
   document: {
-    textStyle({layerTextStyles: {objects: textStyles}}) {
+    noTextStyleNameSpaces({layerTextStyles: {objects: textStyles}}) {
       for (const {name} of textStyles) {
         if (name.match(/\s+/)) {
           return [
@@ -177,7 +177,7 @@ const lintingErrors = await sketchlint(sketchData, {
     },
   },
   document: {
-    textStyle({layerTextStyles: {objects: textStyles}}) {
+    noTextStyleNameSpaces({layerTextStyles: {objects: textStyles}}) {
       for (const {name} of textStyles) {
         if (name.match(/\s+/)) {
           return [
