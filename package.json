@@ -1,6 +1,6 @@
 {
   "name": "sketchlint",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "Pluggable linting utility for Sketch.",
   "repository": {
     "type": "git",
