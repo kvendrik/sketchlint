@@ -71,7 +71,7 @@ describe('sketchlint-cli', () => {
       const result = execSketchlint(...getArgumentsForFixture('basic'));
       const resultOut = result.toString();
       expect(resultOut).toContain('page-about');
-      expect(resultOut).toContain('homepage/V1/_black box/title');
+      expect(resultOut).toContain('homepage/v1/title');
     });
 
     it('shows the error types', () => {
@@ -107,7 +107,7 @@ describe('sketchlint-cli', () => {
     });
 
     it('shows a summary', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
+      const result = execSketchlint(...getArgumentsForFixture('rich'));
       expect(result.toString()).toContain('7 problems (4 errors, 3 warnings)');
     });
 
@@ -116,16 +116,9 @@ describe('sketchlint-cli', () => {
       expect(result.toString()).toContain('✖ 1 problem');
     });
 
-    it('uses plurals when there are multiple problems', () => {
-      const result = execSketchlint(...getArgumentsForFixture('rich'));
-      expect(result.toString()).toContain(
-        '✖ 4 problems (2 errors, 2 warnings)',
-      );
-    });
-
     it('applies the right formatting', () => {
-      const result = execSketchlint(...getArgumentsForFixture('basic'));
-      const expectedOutput = getExpectedOutputForFixture('basic');
+      const result = execSketchlint(...getArgumentsForFixture('rich'));
+      const expectedOutput = getExpectedOutputForFixture('rich');
       expect(result.toString()).toBe(expectedOutput);
     });
 
