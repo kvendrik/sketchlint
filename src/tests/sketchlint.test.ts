@@ -1,111 +1,63 @@
 import {sketchData as basicSketchData} from './fixtures/basic';
 import {
+  sketchData as groupsSketchData,
+  noCapitalizedGroupNames as noCapitalizedGroupNamesRule,
+} from './fixtures/groups';
+import {
   sketchData as exclamationMarkSketchData,
   noExclamationMark as noExclamationMarkRule,
 } from './fixtures/nested-exclamation-mark';
-import sketchlint, {ValidatorError} from '../';
+import getDefaultTestsForValidatorGroup from './utilities/getDefaultTestsForValidatorGroup';
+import sketchlint from '../';
 
-const mockError: ValidatorError = [
-  'error',
-  `Object name contains forbidden prefix.`,
-];
+describe('sketchlint', () => {
+  describe(
+    'pages',
+    getDefaultTestsForValidatorGroup('pages', {
+      expectedValidatorData: [
+        expect.objectContaining({
+          name: 'page-about',
+        }),
+      ],
+      mockSketchData: basicSketchData,
+    }),
+  );
 
-function getDefaultTestsForValidatorGroup(category: string) {
-  return () => {
-    it('runs validators', async () => {
-      const validatorSpy = jest.fn();
-      await sketchlint(basicSketchData, {
-        [category]: {
-          testValidator: validatorSpy,
-        },
-      });
-      expect(validatorSpy).toHaveBeenCalled();
-    });
+  describe(
+    'meta',
+    getDefaultTestsForValidatorGroup('meta', {
+      expectedValidatorData: [
+        expect.objectContaining({
+          fonts: ['BrandonText-Bold'],
+        }),
+      ],
+      mockSketchData: basicSketchData,
+    }),
+  );
 
-    it(`passes the group item into the validator`, async () => {
-      const validatorSpy = jest.fn();
-      await sketchlint(basicSketchData, {
-        [category]: {
-          testValidator: validatorSpy,
-        },
-      });
-      expect(validatorSpy).toHaveBeenCalledWith(
+  describe(
+    'document',
+    getDefaultTestsForValidatorGroup('document', {
+      expectedValidatorData: [
+        expect.objectContaining({
+          assets: expect.objectContaining({
+            colors: expect.any(Array),
+          }),
+        }),
+      ],
+      mockSketchData: basicSketchData,
+    }),
+  );
+
+  describe('layers', () => {
+    getDefaultTestsForValidatorGroup('layers', {
+      expectedValidatorData: [
         expect.objectContaining({
           name: expect.any(String),
         }),
-      );
-    });
-
-    it('includes the ruleID', async () => {
-      const results = await sketchlint(basicSketchData, {
-        [category]: {
-          testValidator: () => mockError,
-        },
-      });
-
-      expect(results).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            ruleID: 'testValidator',
-          }),
-        ]),
-      );
-    });
-
-    it('includes the error message', async () => {
-      const results = await sketchlint(basicSketchData, {
-        [category]: {
-          testValidator: () => mockError,
-        },
-      });
-
-      expect(results).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            message: mockError[1],
-          }),
-        ]),
-      );
-    });
-
-    it('includes the error type', async () => {
-      const results = await sketchlint(basicSketchData, {
-        [category]: {
-          testValidator: () => mockError,
-        },
-      });
-
-      expect(results).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            type: mockError[0],
-          }),
-        ]),
-      );
-    });
-
-    it('includes the error path', async () => {
-      const results = await sketchlint(basicSketchData, {
-        [category]: {
-          testValidator: () => mockError,
-        },
-      });
-
-      expect(results).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            path: expect.any(String),
-          }),
-        ]),
-      );
-    });
-  };
-}
-
-describe('sketchlint', () => {
-  describe('pages', getDefaultTestsForValidatorGroup('pages'));
-  describe('layers', () => {
-    getDefaultTestsForValidatorGroup('layers')();
+      ],
+      mockSketchData: basicSketchData,
+    })();
 
     it('includes the nested error path when the layer is nested', async () => {
       const results = await sketchlint(exclamationMarkSketchData, {
@@ -118,6 +70,72 @@ describe('sketchlint', () => {
         expect.arrayContaining([
           expect.objectContaining({
             path: 'homepage/v1/box/title',
+          }),
+        ]),
+      );
+    });
+  });
+
+  describe('artboards', () => {
+    getDefaultTestsForValidatorGroup('artboards', {
+      expectedValidatorData: [
+        expect.objectContaining({
+          name: expect.any(String),
+        }),
+      ],
+      mockSketchData: basicSketchData,
+    })();
+
+    it('doesnt include artboards in the layers category', async () => {
+      const validatorSpy = jest.fn();
+      await sketchlint(basicSketchData, {
+        layers: {
+          testValidator: validatorSpy,
+        },
+      });
+      expect(validatorSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'v1',
+        }),
+      );
+    });
+  });
+
+  describe('groups', () => {
+    getDefaultTestsForValidatorGroup('groups', {
+      expectedValidatorData: [
+        expect.objectContaining({
+          name: expect.any(String),
+        }),
+      ],
+      mockSketchData: groupsSketchData,
+    })();
+
+    it('doesnt include groups in the layers category', async () => {
+      const validatorSpy = jest.fn();
+      await sketchlint(groupsSketchData, {
+        layers: {
+          testGroupValidator: validatorSpy,
+        },
+      });
+      expect(validatorSpy).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'content',
+        }),
+      );
+    });
+
+    it('includes the nested error path when the group is nested', async () => {
+      const results = await sketchlint(groupsSketchData, {
+        groups: {
+          noCapitalizedGroupNamesRule,
+        },
+      });
+
+      expect(results).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            path: 'about/v1/content/Version',
           }),
         ]),
       );
